@@ -15,9 +15,8 @@ namespace Laborlance_API.Helpers
             var roles = new List<Role>
             {
                 new Role{Name = "Admin"},
-                new Role{Name = "Owner"},
-                new Role{Name = "Renter"},
-                new Role{Name = "Driver"},
+                new Role{Name = "Worker"},
+                new Role{Name = "Customer"},
             };
 
             foreach (var role in roles)
