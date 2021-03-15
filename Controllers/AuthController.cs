@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Laborlance_API.Dtos;
 using Laborlance_API.Interfaces;
 using Laborlance_API.Models;
+using Laborlance_API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,10 +21,12 @@ namespace Laborlance_API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly RoleManager<Role> _roleManager;
+        private readonly TokenService _tokenService;
         public AuthController(IAuthRepository repo, IConfiguration config,
             UserManager<User> userManager, SignInManager<User> signInManager,
-            IMapper mapper, RoleManager<Role> roleManager)
+        IMapper mapper, RoleManager<Role> roleManager, TokenService tokenService)
         {
+            _tokenService = tokenService;
             _roleManager = roleManager;
             _mapper = mapper;
             _repo = repo;
@@ -37,7 +42,7 @@ namespace Laborlance_API.Controllers
             return BadRequest("Provided user role does not exist");
         var userToCreate = _mapper.Map<User>(userForRegisterDto);
         var userCreationResult = await _userManager.CreateAsync(userToCreate, userForRegisterDto.Password);
-        if(!userCreationResult.Succeeded)
+        if (!userCreationResult.Succeeded)
             return BadRequest(userCreationResult.Errors);
         var roleAdditionResult = await _userManager.AddToRoleAsync(userToCreate, userForRegisterDto.RoleName);
         if (!roleAdditionResult.Succeeded)
@@ -49,7 +54,7 @@ namespace Laborlance_API.Controllers
     public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
     {
         var user = await _userManager.FindByNameAsync(userForLoginDto.Username);
-        if(user == null)
+        if (user == null)
             return Unauthorized("User with provided username not found");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user,
@@ -57,44 +62,17 @@ namespace Laborlance_API.Controllers
 
         if (result.Succeeded)
         {
-            if(!await _userManager.IsInRoleAsync(user, userForLoginDto.RoleName))
+            if (!await _userManager.IsInRoleAsync(user, userForLoginDto.RoleName))
                 return Unauthorized("User does not have access to this role");
 
             return Ok(new
             {
-                token = await GenerateJwtToken(user),
+                token = await _tokenService.GenerateJwtToken(user),
                 user
             });
         }
         return Unauthorized("Problem logging in");
     }
-    private async Task<string> GenerateJwtToken(User user)
-    {
-        var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-            };
 
-        var roles = await _userManager.GetRolesAsync(user);
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(1),
-            SigningCredentials = creds
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        return tokenHandler.WriteToken(token);
-    }
-    }
+}
 }
