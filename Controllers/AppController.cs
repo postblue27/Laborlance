@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
+using Laborlance_API.Data;
 using Laborlance_API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Laborlance_API.Controllers
 {
@@ -10,16 +12,26 @@ namespace Laborlance_API.Controllers
     public class AppController : ControllerBase
     {
         private readonly RoleManager<Role> _roleManager;
-        public AppController(RoleManager<Role> roleManager)
+        private readonly UserManager<User> _userManager;
+        private readonly DataContext _context;
+        public AppController(RoleManager<Role> roleManager, UserManager<User> userManager,
+            DataContext context)
         {
+            _context = context;
+            _userManager = userManager;
             _roleManager = roleManager;
         }
-        [HttpGet("get-roles")]
-        public async Task<IActionResult> GetRoles()
-        {
-            var roles = _roleManager.Roles;
-            return Ok(roles);
-        }
-
+    [HttpGet("get-roles")]
+    public async Task<IActionResult> GetRoles()
+    {
+        var roles = _roleManager.Roles;
+        return Ok(roles);
     }
+    [HttpGet("get-inh-users")]
+    public async Task<IActionResult> GetInhUsers()
+    {
+        var inhUsers = await _context.InhUsers.ToListAsync();
+        return Ok(inhUsers);
+    }
+}
 }

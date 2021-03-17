@@ -9,6 +9,9 @@ namespace Laborlance_API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<UserForRegisterDto, User>(); 
+            // CreateMap<UserForRegisterDto, Worker>(); 
+            // CreateMap<UserForRegisterDto, Renter>(); 
+            // CreateMap<UserForRegisterDto, Customer>(); 
         }
     }
 }
