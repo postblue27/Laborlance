@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Laborlance_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210317182500_Relations")]
+    [Migration("20210317222759_Relations")]
     partial class Relations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,6 +92,34 @@ namespace Laborlance_API.Migrations
                     b.HasIndex("WorkerId");
 
                     b.ToTable("Proposals");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Review", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.Role", b =>
@@ -351,6 +379,9 @@ namespace Laborlance_API.Migrations
                     b.Property<double>("HourlyWage")
                         .HasColumnType("float");
 
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
                     b.HasDiscriminator().HasValue("Worker");
                 });
 
@@ -390,6 +421,21 @@ namespace Laborlance_API.Migrations
                         .WithMany("Proposals")
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Review", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Customer", "Customer")
+                        .WithMany("GivenReviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Laborlance_API.Models.Worker", "Worker")
+                        .WithMany("ReceivedReviews")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

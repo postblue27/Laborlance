@@ -5,16 +5,15 @@ namespace Laborlance_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProposalController : ControllerBase
+    public class ReviewController : ControllerBase
     {
-        private readonly IProposalRepository _proposalRepo;
+        private readonly IReviewRepository _reviewRepo;
         private readonly IAppRepository _appRepo;
-        public ProposalController(IProposalRepository proposalRepo, IAppRepository appRepo)
+        public ReviewController(IAppRepository appRepo, IReviewRepository reviewRepo)
         {
             _appRepo = appRepo;
-            _proposalRepo = proposalRepo;
+            _reviewRepo = reviewRepo;
 
         }
-
     }
 }

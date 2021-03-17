@@ -6,5 +6,6 @@ namespace Laborlance_API.Models
     {
         public ICollection<Order> Orders { get; set; }
         public ICollection<Operation> OrderedOperations { get; set; }
+        public ICollection<Review> GivenReviews { get; set; }
     }
 }

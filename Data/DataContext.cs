@@ -17,6 +17,7 @@ namespace Laborlance_API.Data
         public DbSet<Operation> Operations { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -74,7 +75,17 @@ namespace Laborlance_API.Data
                 .HasForeignKey(t => t.OperationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            
+            modelBuilder.Entity<Worker>()
+                .HasMany(w => w.ReceivedReviews)
+                .WithOne(r => r.Worker)
+                .HasForeignKey(r => r.WorkerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Customer>()
+                .HasMany(c => c.GivenReviews)
+                .WithOne(r => r.Customer)
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

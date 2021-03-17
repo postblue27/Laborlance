@@ -60,6 +60,9 @@ namespace Laborlance_API
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IToolRepository, ToolRepository>();
+            services.AddScoped<IOperationRepository, OperationRepository>();
+            services.AddScoped<IProposalRepository, ProposalRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<TokenService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
