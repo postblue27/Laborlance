@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Laborlance_API.Models
@@ -9,8 +10,9 @@ namespace Laborlance_API.Models
         public Worker Worker { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
-        public ICollection<ToolInRent> ToolsInRent { get; set; }
-        public bool IsFinished { get; set; }
-        public double FinalPrice { get; set; }
+        public ICollection<Tool> ToolsInRent { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public double CurrentPrice { get; set; }
     }
 }

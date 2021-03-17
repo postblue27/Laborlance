@@ -6,6 +6,6 @@ namespace Laborlance_API.Models
     {
         public double HourlyWage { get; set; }
         public ICollection<Proposal> Proposals { get; set; }
-        public ICollection<Operation> FulfilledOperations { get; set; }
+        public ICollection<Operation> Operations { get; set; }
     }
 }

@@ -16,7 +16,6 @@ namespace Laborlance_API.Data
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Renter> Renters { get; set; }
         public DbSet<Operation> Operations { get; set; }
-        public DbSet<ToolInRent> ToolsInRent { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,11 +43,37 @@ namespace Laborlance_API.Data
                 .HasForeignKey(o => o.CustomerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // modelBuilder.Entity<Customer>()
-            //     .HasMany(o => o.OrderedOperations)
-            //     .WithOne(c => c.Customer)
-            //     .HasForeignKey(c => c.)
-            //     .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Worker>()
+                .HasMany(w => w.Proposals)
+                .WithOne(p => p.Worker)
+                .HasForeignKey(p => p.WorkerId)
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Worker>()
+                .HasMany(w => w.Operations)
+                .WithOne(o => o.Worker)
+                .HasForeignKey(o => o.WorkerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Renter>()
+                .HasMany(r => r.Tools)
+                .WithOne(t => t.Renter)
+                .HasForeignKey(t => t.RenterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.Proposals)
+                .WithOne(p => p.Order)
+                .HasForeignKey(p => p.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Operation>()
+                .HasMany(o => o.ToolsInRent)
+                .WithOne(t => t.Operation)
+                .HasForeignKey(t => t.OperationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            
         }
     }
 }
