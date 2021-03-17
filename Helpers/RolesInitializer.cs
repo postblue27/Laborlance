@@ -27,7 +27,7 @@ namespace Laborlance_API.Helpers
                     await roleManager.CreateAsync(role);
                 }
             }
-
+            //admin seeding
             if (await userManager.FindByNameAsync(adminUsername) == null)
             {
                 User admin = new User { Email = adminEmail, UserName = adminUsername };
@@ -37,17 +37,43 @@ namespace Laborlance_API.Helpers
                     await userManager.AddToRoleAsync(admin, "admin");
                 }
             }
-            string inhUsername = "newInhUser";
-            string inhUserEmail = "newinhuser@gmail.com";
-            string inhUserPassword = "password";
-            string inhUserName = "ownInhUserName";
-            if (await userManager.FindByNameAsync(inhUsername) == null)
+            //worker seeding
+            string workerUsername = "newWorker";
+            string wokerEmail = "newWorker@gmail.com";
+            string workerPassword = "password";
+            if (await userManager.FindByNameAsync(workerUsername) == null)
             {
-                InhUser inhUser = new InhUser { Email = inhUserEmail, UserName = inhUsername, InhUserName = inhUserName };
-                IdentityResult result = await userManager.CreateAsync(inhUser, inhUserPassword);
+                Worker worker = new Worker { Email = wokerEmail, UserName = workerUsername};
+                IdentityResult result = await userManager.CreateAsync(worker, workerPassword);
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(inhUser, "renter");
+                    await userManager.AddToRoleAsync(worker, "worker");
+                }
+            }
+            //renter seeding
+            string renterUsername = "newRenter";
+            string renterEmail = "newRenter@gmail.com";
+            string renterPassword = "password";
+            if (await userManager.FindByNameAsync(renterUsername) == null)
+            {
+                Renter renter = new Renter { Email = renterEmail, UserName = renterUsername};
+                IdentityResult result = await userManager.CreateAsync(renter, renterPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(renter, "renter");
+                }
+            }
+            //customer seeding
+            string cusomerUsername = "newCustomer";
+            string cusomerEmail = "newCustomer@gmail.com";
+            string cusomerPassword = "password";
+            if (await userManager.FindByNameAsync(cusomerUsername) == null)
+            {
+                Customer customer = new Customer { Email = cusomerEmail, UserName = cusomerUsername};
+                IdentityResult result = await userManager.CreateAsync(customer, cusomerPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(customer, "customer");
                 }
             }
         }

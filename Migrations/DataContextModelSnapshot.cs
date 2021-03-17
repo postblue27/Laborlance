@@ -67,7 +67,7 @@ namespace Laborlance_API.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.Proposal", b =>
@@ -89,7 +89,7 @@ namespace Laborlance_API.Migrations
 
                     b.HasIndex("WorkerId");
 
-                    b.ToTable("Proposal");
+                    b.ToTable("Proposals");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.Role", b =>
@@ -128,10 +128,7 @@ namespace Laborlance_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("InhUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OperationId")
+                    b.Property<int?>("OperationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProposalId")
@@ -147,8 +144,6 @@ namespace Laborlance_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ToolId");
-
-                    b.HasIndex("InhUserId");
 
                     b.HasIndex("OperationId");
 
@@ -340,16 +335,6 @@ namespace Laborlance_API.Migrations
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
-            modelBuilder.Entity("Laborlance_API.Models.InhUser", b =>
-                {
-                    b.HasBaseType("Laborlance_API.Models.User");
-
-                    b.Property<string>("InhUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("InhUser");
-                });
-
             modelBuilder.Entity("Laborlance_API.Models.Renter", b =>
                 {
                     b.HasBaseType("Laborlance_API.Models.User");
@@ -408,15 +393,10 @@ namespace Laborlance_API.Migrations
 
             modelBuilder.Entity("Laborlance_API.Models.Tool", b =>
                 {
-                    b.HasOne("Laborlance_API.Models.InhUser", null)
-                        .WithMany("Tools")
-                        .HasForeignKey("InhUserId");
-
                     b.HasOne("Laborlance_API.Models.Operation", "Operation")
                         .WithMany("ToolsInRent")
                         .HasForeignKey("OperationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Laborlance_API.Models.Proposal", null)
                         .WithMany("ProposedTools")

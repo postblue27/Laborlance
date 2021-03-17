@@ -20,7 +20,7 @@ namespace Laborlance_API.Data
         }
         public async Task<List<User>> GetUsers()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _userManager.Users.Include(u => u.UserRoles).ToListAsync();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Laborlance_API.Models
         public double RentalPrice { get; set; }
         public int RenterId { get; set; }
         public Renter Renter { get; set; }
-        public int OperationId { get; set; }
+        public int? OperationId { get; set; }
         public Operation Operation { get; set; }
     }
 }

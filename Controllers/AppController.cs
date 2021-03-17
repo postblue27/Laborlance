@@ -27,11 +27,6 @@ namespace Laborlance_API.Controllers
         var roles = _roleManager.Roles;
         return Ok(roles);
     }
-    [HttpGet("get-inh-users")]
-    public async Task<IActionResult> GetInhUsers()
-    {
-        var inhUsers = await _context.InhUsers.ToListAsync();
-        return Ok(inhUsers);
-    }
+    
 }
 }

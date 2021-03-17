@@ -43,7 +43,6 @@ namespace Laborlance_API.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    InhUserName = table.Column<string>(nullable: true),
                     HourlyWage = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
@@ -186,7 +185,7 @@ namespace Laborlance_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "Orders",
                 columns: table => new
                 {
                     OrderId = table.Column<int>(nullable: false)
@@ -196,9 +195,9 @@ namespace Laborlance_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.OrderId);
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_CustomerId",
+                        name: "FK_Orders_AspNetUsers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -206,7 +205,7 @@ namespace Laborlance_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Proposal",
+                name: "Proposals",
                 columns: table => new
                 {
                     ProposalId = table.Column<int>(nullable: false)
@@ -216,15 +215,15 @@ namespace Laborlance_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Proposal", x => x.ProposalId);
+                    table.PrimaryKey("PK_Proposals", x => x.ProposalId);
                     table.ForeignKey(
-                        name: "FK_Proposal_Order_OrderId",
+                        name: "FK_Proposals_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Order",
+                        principalTable: "Orders",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Proposal_AspNetUsers_WorkerId",
+                        name: "FK_Proposals_AspNetUsers_WorkerId",
                         column: x => x.WorkerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -239,19 +238,12 @@ namespace Laborlance_API.Migrations
                     ToolName = table.Column<string>(nullable: true),
                     RentalPrice = table.Column<double>(nullable: false),
                     RenterId = table.Column<int>(nullable: false),
-                    OperationId = table.Column<int>(nullable: false),
-                    InhUserId = table.Column<int>(nullable: true),
+                    OperationId = table.Column<int>(nullable: true),
                     ProposalId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tools", x => x.ToolId);
-                    table.ForeignKey(
-                        name: "FK_Tools_AspNetUsers_InhUserId",
-                        column: x => x.InhUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tools_Operations_OperationId",
                         column: x => x.OperationId,
@@ -259,9 +251,9 @@ namespace Laborlance_API.Migrations
                         principalColumn: "OperationId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tools_Proposal_ProposalId",
+                        name: "FK_Tools_Proposals_ProposalId",
                         column: x => x.ProposalId,
-                        principalTable: "Proposal",
+                        principalTable: "Proposals",
                         principalColumn: "ProposalId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -321,24 +313,19 @@ namespace Laborlance_API.Migrations
                 column: "WorkerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_CustomerId",
-                table: "Order",
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Proposal_OrderId",
-                table: "Proposal",
+                name: "IX_Proposals_OrderId",
+                table: "Proposals",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Proposal_WorkerId",
-                table: "Proposal",
+                name: "IX_Proposals_WorkerId",
+                table: "Proposals",
                 column: "WorkerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tools_InhUserId",
-                table: "Tools",
-                column: "InhUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tools_OperationId",
@@ -383,10 +370,10 @@ namespace Laborlance_API.Migrations
                 name: "Operations");
 
             migrationBuilder.DropTable(
-                name: "Proposal");
+                name: "Proposals");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

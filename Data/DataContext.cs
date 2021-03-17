@@ -11,11 +11,12 @@ namespace Laborlance_API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options){ }
         public DbSet<Tool> Tools { get; set; }
-        public DbSet<InhUser> InhUsers { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Renter> Renters { get; set; }
         public DbSet<Operation> Operations { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Proposal> Proposals { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
