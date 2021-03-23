@@ -7,6 +7,7 @@ using AutoMapper;
 using Laborlance_API.Data;
 using Laborlance_API.Interfaces;
 using Laborlance_API.Models;
+using Laborlance_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -55,6 +56,14 @@ namespace Laborlance_API
             services.AddCors();
 
             services.AddScoped<IAppRepository, AppRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IToolRepository, ToolRepository>();
+            services.AddScoped<IOperationRepository, OperationRepository>();
+            services.AddScoped<IProposalRepository, ProposalRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<TokenService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {

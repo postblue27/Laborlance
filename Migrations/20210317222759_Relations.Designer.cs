@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Laborlance_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210315121021_Initial")]
-    partial class Initial
+    [Migration("20210317222759_Relations")]
+    partial class Relations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,107 @@ namespace Laborlance_API.Migrations
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Laborlance_API.Models.Operation", b =>
+                {
+                    b.Property<int>("OperationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("CurrentPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OperationId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Operations");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Order", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Proposal", b =>
+                {
+                    b.Property<int>("ProposalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProposalId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Proposals");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Review", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Reviews");
+                });
 
             modelBuilder.Entity("Laborlance_API.Models.Role", b =>
                 {
@@ -50,6 +151,39 @@ namespace Laborlance_API.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("Laborlance_API.Models.Tool", b =>
+                {
+                    b.Property<int>("ToolId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("OperationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProposalId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("RentalPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RenterId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToolName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ToolId");
+
+                    b.HasIndex("OperationId");
+
+                    b.HasIndex("ProposalId");
+
+                    b.HasIndex("RenterId");
+
+                    b.ToTable("Tools");
+                });
+
             modelBuilder.Entity("Laborlance_API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -62,6 +196,10 @@ namespace Laborlance_API.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -115,6 +253,8 @@ namespace Laborlance_API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.UserRole", b =>
@@ -216,6 +356,105 @@ namespace Laborlance_API.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Customer", b =>
+                {
+                    b.HasBaseType("Laborlance_API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Customer");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Renter", b =>
+                {
+                    b.HasBaseType("Laborlance_API.Models.User");
+
+                    b.HasDiscriminator().HasValue("Renter");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Worker", b =>
+                {
+                    b.HasBaseType("Laborlance_API.Models.User");
+
+                    b.Property<double>("HourlyWage")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasDiscriminator().HasValue("Worker");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Operation", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Customer", "Customer")
+                        .WithMany("OrderedOperations")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Laborlance_API.Models.Worker", "Worker")
+                        .WithMany("Operations")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Order", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Proposal", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Order", "Order")
+                        .WithMany("Proposals")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Laborlance_API.Models.Worker", "Worker")
+                        .WithMany("Proposals")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Review", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Customer", "Customer")
+                        .WithMany("GivenReviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Laborlance_API.Models.Worker", "Worker")
+                        .WithMany("ReceivedReviews")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.Tool", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Operation", "Operation")
+                        .WithMany("ToolsInRent")
+                        .HasForeignKey("OperationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Laborlance_API.Models.Proposal", null)
+                        .WithMany("ProposedTools")
+                        .HasForeignKey("ProposalId");
+
+                    b.HasOne("Laborlance_API.Models.Renter", "Renter")
+                        .WithMany("Tools")
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.UserRole", b =>
