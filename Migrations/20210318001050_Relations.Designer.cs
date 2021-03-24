@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Laborlance_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210317222759_Relations")]
+    [Migration("20210318001050_Relations")]
     partial class Relations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,9 +161,6 @@ namespace Laborlance_API.Migrations
                     b.Property<int?>("OperationId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProposalId")
-                        .HasColumnType("int");
-
                     b.Property<double>("RentalPrice")
                         .HasColumnType("float");
 
@@ -177,11 +174,31 @@ namespace Laborlance_API.Migrations
 
                     b.HasIndex("OperationId");
 
-                    b.HasIndex("ProposalId");
-
                     b.HasIndex("RenterId");
 
                     b.ToTable("Tools");
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.ToolInProposal", b =>
+                {
+                    b.Property<int>("ToolInProposalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProposalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToolId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ToolInProposalId");
+
+                    b.HasIndex("ProposalId");
+
+                    b.HasIndex("ToolId");
+
+                    b.ToTable("ToolsInProposals");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.User", b =>
@@ -446,14 +463,25 @@ namespace Laborlance_API.Migrations
                         .HasForeignKey("OperationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Laborlance_API.Models.Proposal", null)
-                        .WithMany("ProposedTools")
-                        .HasForeignKey("ProposalId");
-
                     b.HasOne("Laborlance_API.Models.Renter", "Renter")
                         .WithMany("Tools")
                         .HasForeignKey("RenterId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborlance_API.Models.ToolInProposal", b =>
+                {
+                    b.HasOne("Laborlance_API.Models.Proposal", "Proposal")
+                        .WithMany("ProposedTools")
+                        .HasForeignKey("ProposalId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Laborlance_API.Models.Tool", "Tool")
+                        .WithMany("ToolInProposal")
+                        .HasForeignKey("ToolId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

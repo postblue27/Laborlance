@@ -22,5 +22,11 @@ namespace Laborlance_API.Data
         {
             return await _userManager.Users.Include(u => u.UserRoles).ToListAsync();
         }
+
+        public async Task<List<User>> GetUsersByRole(string roleName)
+        {
+            var users = await _userManager.GetUsersInRoleAsync(roleName);
+            return (List<User>)users;
+        }
     }
 }

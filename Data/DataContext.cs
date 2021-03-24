@@ -18,6 +18,7 @@ namespace Laborlance_API.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<ToolInProposal> ToolsInProposals { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -86,6 +87,18 @@ namespace Laborlance_API.Data
                 .WithOne(r => r.Customer)
                 .HasForeignKey(r => r.CustomerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Proposal>()
+                .HasMany(p => p.ProposedTools)
+                .WithOne(tip => tip.Proposal)
+                .HasForeignKey(tip => tip.ProposalId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Tool>()
+                .HasMany(t => t.ToolInProposal)
+                .WithOne(tip => tip.Tool)
+                .HasForeignKey(tip => tip.ToolId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

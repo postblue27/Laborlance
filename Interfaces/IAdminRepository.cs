@@ -7,5 +7,6 @@ namespace Laborlance_API.Interfaces
     public interface IAdminRepository
     {
         Task<List<User>> GetUsers();
+        Task<List<User>> GetUsersByRole(string roleName);
     }
 }

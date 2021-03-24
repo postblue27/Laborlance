@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Laborlance_API.Models
 {
     public class Tool
@@ -9,5 +11,6 @@ namespace Laborlance_API.Models
         public Renter Renter { get; set; }
         public int? OperationId { get; set; }
         public Operation Operation { get; set; }
+        public ICollection<ToolInProposal> ToolInProposal { get; set; }
     }
 }
