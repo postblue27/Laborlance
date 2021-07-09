@@ -9,5 +9,6 @@ namespace Laborlance_API.Interfaces
         Task<List<ToolInProposal>> GetProposedTools(int proposalId);
         Task<Proposal> GetProposal(int proposalId);
         Task<List<Proposal>> GetOrderProposals(int orderId);
+        Task<List<Proposal>> GetWorkerProposals(int workerId);
     }
 }

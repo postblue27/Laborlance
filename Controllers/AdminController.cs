@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Laborlance_API.Data;
 using Laborlance_API.Dtos;
 using Laborlance_API.Interfaces;
 using Laborlance_API.Models;
@@ -17,15 +18,18 @@ namespace Laborlance_API.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserRepository _userRepo;
+        private readonly DataContext _context;
         public AdminController(IAdminRepository adminrepo, IAppRepository apprepo,
 
-        RoleManager<Role> roleManager, UserManager<User> userManager, IUserRepository userRepo)
+            RoleManager<Role> roleManager, UserManager<User> userManager, IUserRepository userRepo, 
+            DataContext context)
         {
             _userRepo = userRepo;
             _userManager = userManager;
             _roleManager = roleManager;
             _adminrepo = adminrepo;
             _apprepo = apprepo;
+            _context = context;
         }
     [Authorize(Roles = "Admin")]
     [HttpGet("get-roles")]
@@ -52,13 +56,25 @@ namespace Laborlance_API.Controllers
         return Ok(usersList);
     }
     [Authorize(Roles = "Admin")]
+    [HttpGet("get-users-by-role-for-android/{roleName}")]
+    public async Task<IActionResult> GetUsersByRoleForAndroid(string roleName)
+    {
+        var usersList = await _adminrepo.GetUsersByRoleForAndroid(roleName);
+        if (usersList == null)
+            return BadRequest("No users in this role");
+        return Ok(usersList);
+    }
+    [Authorize(Roles = "Admin")]
     [HttpPost("update-user")]
     public async Task<IActionResult> UpdateUser([FromBody] User userForUpdate)
     {
-        _apprepo.Update(userForUpdate);
-        if (await _apprepo.SaveAll())
+        var user = await _userManager.FindByIdAsync(userForUpdate.Id.ToString());
+        user.UserName = userForUpdate.UserName;
+        user.Email = userForUpdate.Email;
+        var result = await _userManager.UpdateAsync(user);
+        if(result.Succeeded)
         {
-            return Ok(userForUpdate);
+            return Ok(user);
         }
         return BadRequest("Problem updating user");
     }
@@ -84,6 +100,13 @@ namespace Laborlance_API.Controllers
             return Ok(userToDelete);
         }
         return BadRequest("Problem deleting user");
+    }
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-operations")]
+    public async Task<IActionResult> GetOperations()
+    {
+        var operations = _context.Operations;
+        return Ok(operations);
     }
 }
 }

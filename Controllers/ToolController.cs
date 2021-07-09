@@ -25,7 +25,7 @@ namespace Laborlance_API.Controllers
         {
             _appRepo.Add(toolToCreate);
             if(await _appRepo.SaveAll())
-                return Ok("Tool succsessfully added");
+                return Ok(toolToCreate);
             return BadRequest("Problem adding tool");
         }
 
@@ -35,6 +35,26 @@ namespace Laborlance_API.Controllers
         {
             var renterTools = await _toolRepo.GetRenterTools(renterId);
             return Ok(renterTools);
+        }
+        [Authorize(Roles = "Admin,Renter")]
+        [HttpDelete("delete-tool/{toolId}")]
+        public async Task<IActionResult> DeleteTool(int toolId)
+        {
+            var toolToDelete = await _toolRepo.GetToolById(toolId);
+            // return Ok(toolToDelete);
+            _appRepo.Delete(toolToDelete);
+            if (await _appRepo.SaveAll())
+            {
+                return Ok(toolToDelete);
+            }
+            return BadRequest("Problem deleting tool");
+        }
+        [Authorize(Roles = "Renter,Admin,Worker")]
+        [HttpGet("get-all-tools")]
+        public async Task<IActionResult> GetAllTools()
+        {
+            var tools = await _toolRepo.GetAllTools();
+            return Ok(tools);
         }
     }
 }

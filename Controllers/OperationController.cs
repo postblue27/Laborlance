@@ -33,14 +33,13 @@ namespace Laborlance_API.Controllers
         Operation operationForCreate = new Operation
         {
             WorkerId = proposal.WorkerId,
-            CustomerId = proposal.Order.OrderId,
+            CustomerId = proposal.Order.CustomerId,
             StartDate = System.DateTime.Now,
             Description = proposal.Order.Description
         };
         _appRepo.Add(operationForCreate);
         
-        
-        
+        // _appRepo.Delete(proposal.Order);
         await _appRepo.SaveAll();
         foreach(ToolInProposal tip in toolsInProposal)
         {
@@ -50,53 +49,39 @@ namespace Laborlance_API.Controllers
         }
         await _appRepo.SaveAll();
         return Ok(operationForCreate);
-        // var i = proposal.ProposedTools.GetEnumerator();
-        // while (i.j < proposal.ProposedTools.Count)
-        // {
-        //     i.MoveNext();
-        //     ToolInProposal tip = new ToolInProposal
-        //     {
-        //         ProposalId = proposalForCreate.ProposalId,
-        //         ToolId = i.Current.ToolId
-        //     };
-        //     _appRepo.Add(tip);
-        //     j++;
-        // }
-        // i.MoveNext();
-        // foreach (ToolInProposal t in proposal.ProposedTools)
-
-        //     Operation operationForCreate = new Operation
-        //     {
-
-        //     };
-        // Proposal proposalForCreate = new Proposal
-        // {
-        //     OrderId = proposalDto.OrderId,
-        //     WorkerId = proposalDto.WorkerId
-        // };
-        // _appRepo.Add(proposalForCreate);
-        // await _appRepo.SaveAll();
-        // int j = 0;
-        // var i = proposalDto.ToolsInProposal.GetEnumerator();
-        // while (j < proposalDto.ToolsInProposal.Count)
-        // {
-        //     i.MoveNext();
-        //     ToolInProposal tip = new ToolInProposal
-        //     {
-        //         ProposalId = proposalForCreate.ProposalId,
-        //         ToolId = i.Current.ToolId
-        //     };
-        //     _appRepo.Add(tip);
-        //     j++;
-        // }
-        // i.MoveNext();
-        // if (await _appRepo.SaveAll())
-        // {
-        //     return Ok("Proposal added");
-        //     // return Ok(i.Current);
-        // }
-        // return BadRequest("Problem adding proposal");
+    }
+    
+    [Authorize(Roles = "Customer,Admin")]
+    [HttpGet("get-customer-operations/{customerId}")]
+    public async Task<IActionResult> GetCustomerOperations(int customerId)
+    {
+        var customerOperations = await _operationRepo.GetCustomerOperations(customerId);
+        return Ok(customerOperations);
     }
 
+    [Authorize(Roles = "Worker,Admin")]
+    [HttpGet("get-worker-operations/{workerId}")]
+    public async Task<IActionResult> GetWorkerOperations(int workerId)
+    {
+        var workerOperations = await _operationRepo.GetWorkerOperations(workerId);
+        return Ok(workerOperations);
+    }
+
+    [Authorize(Roles = "Worker,Admin")]
+    [HttpPost("close-operation/{operationId}/{finalCost}")]
+    public async Task<IActionResult> CloseOperation(int operationId, float finalCost)
+    {
+        var operation = await _operationRepo.GetOperationById(operationId);
+        operation.EndDate = System.DateTime.Now;
+        operation.CurrentPrice = finalCost;
+        _appRepo.Update(operation);
+        foreach(var tool in operation.ToolsInRent)
+        {
+            tool.OperationId = null;
+            _appRepo.Update(tool);
+        }
+        await _appRepo.SaveAll();
+        return Ok(operation);
+    }
 }
 }

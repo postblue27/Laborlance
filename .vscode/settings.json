@@ -1,5 +1,4 @@
 {
     "appService.preDeployTask": "publish-release",
-    "appService.deploySubpath": "bin\\Release\\netcoreapp3.1\\publish",
-    "appService.defaultWebAppToDeploy": "/subscriptions/51bfa299-9aa8-4aa4-8f88-c111e1d17675/resourceGroups/laborlance-resource-group/providers/Microsoft.Web/sites/laborlance"
+    "appService.deploySubpath": "bin\\Release\\netcoreapp3.1\\publish"
 }

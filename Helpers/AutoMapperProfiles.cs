@@ -12,6 +12,7 @@ namespace Laborlance_API.Helpers
             CreateMap<UserForRegisterDto, Worker>(); 
             CreateMap<UserForRegisterDto, Renter>(); 
             CreateMap<UserForRegisterDto, Customer>(); 
+            CreateMap<User, UserForAndroid>(); 
         }
     }
 }

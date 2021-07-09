@@ -33,5 +33,11 @@ namespace Laborlance_API.Data
                 .Include(p => p.ProposedTools).ToListAsync();
             return proposals;
         }
+        public async Task<List<Proposal>> GetWorkerProposals(int workerId)
+        {
+            var proposals = await _context.Proposals.Where(p => p.WorkerId == workerId)
+                .Include("ProposedTools.Tool").Include(p => p.Worker).ToListAsync();
+            return proposals;
+        }
     }
 }

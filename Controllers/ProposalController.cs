@@ -51,7 +51,7 @@ namespace Laborlance_API.Controllers
         i.MoveNext();
         if (await _appRepo.SaveAll())
         {
-            return Ok("Proposal added");
+            return Ok(proposalForCreate);
             // return Ok(i.Current);
         }
         return BadRequest("Problem adding proposal");
@@ -64,6 +64,15 @@ namespace Laborlance_API.Controllers
         var orderProposals = await _proposalRepo.GetOrderProposals(orderId);
         return Ok(orderProposals);
     }
+
+    [Authorize(Roles = "Worker,Admin")]
+    [HttpGet("get-worker-proposals/{workerId}")]
+    public async Task<IActionResult> GetWorkerProposals(int workerId)
+    {
+        var proposals = await _proposalRepo.GetWorkerProposals(workerId);
+        return Ok(proposals);
+    }
+
     [HttpGet("get-proposal-rating/{orderId}")]
     public async Task<IActionResult> GetProposalRating(int orderId)
     {
