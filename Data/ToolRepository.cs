@@ -17,12 +17,14 @@ namespace Laborlance_API.Data
         }
         public async Task<List<Tool>> GetRenterTools(int renterId)
         {
-            var renterTools = await _context.Tools.Where(t => t.RenterId == renterId).Include(t => t.Operation).ToListAsync();
+            var renterTools = await _context.Tools.Where(t => t.RenterId == renterId).Include(t => t.Operation).
+                Include(t => t.ToolImages).ToListAsync();
             return renterTools;
         }
         public async Task<Tool> GetToolById(int toolId)
         {
-            var tool = await _context.Tools.Include(t => t.Operation).FirstOrDefaultAsync(o => o.ToolId == toolId);
+            var tool = await _context.Tools.Include(t => t.Operation).Include(t => t.ToolImages)
+                .FirstOrDefaultAsync(o => o.ToolId == toolId);
             return tool;
         }
         public async Task<List<Tool>> GetAllTools()

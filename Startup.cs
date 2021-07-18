@@ -50,7 +50,7 @@ namespace Laborlance_API
             builder.AddSignInManager<SignInManager<User>>();
 
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("AnotherConnection")));
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("LocalDbConnection")));
             services.AddControllers().AddNewtonsoftJson(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
@@ -67,6 +67,7 @@ namespace Laborlance_API
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<TokenService>();
+            services.AddScoped<CloudinaryService>();
             services.AddScoped<BestChoiceService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
