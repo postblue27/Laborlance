@@ -19,6 +19,7 @@ namespace Laborlance_API.Data
         public DbSet<Proposal> Proposals { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ToolInProposal> ToolsInProposals { get; set; }
+        public DbSet<ToolImage> ToolImages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -69,8 +69,6 @@ namespace Laborlance_API.Controllers
             var tools = await _toolRepo.GetAllTools();
             return Ok(tools);
         }
-
-        
         
         [Authorize(Roles = "Renter")]
         [HttpPost("add-tool")]
@@ -108,6 +106,52 @@ namespace Laborlance_API.Controllers
             return Ok(toolToCreate);
         }
 
+        [Authorize(Roles = "Renter,Admin")]
+        [HttpPost("add-new-tool-images")]
+        public async Task<IActionResult> AddNewToolImages([FromForm] IFormFile[] images, [FromForm]int toolId)
+        {
+            var tool = await _toolRepo.GetToolById(toolId);
+            foreach (var i in images)
+            {
+                var result = await _cloudinaryService.UploadImageAsync(i);
+                // return Ok(result);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+                ToolImage toolImage = new ToolImage{
+                    ToolId = tool.ToolId,
+                    ImageUrl = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId
+                };
+                _appRepo.Add(toolImage);
+            }
+            if(!await _appRepo.SaveAll())
+            {
+                return BadRequest("Problem adding photo");
+            } 
+            return Ok(tool);
+        }
+
+        [Authorize(Roles = "Renter,Admin")]
+        [HttpGet("get-tool-by-id/{toolId}")]
+        public async Task<IActionResult> GetToolById(int toolId)
+        {
+            var tool = await _toolRepo.GetToolById(toolId);
+            return Ok(tool);
+        }
+
+        [Authorize(Roles = "Renter,Admin")]
+        [HttpDelete("delete-tool-image/{publicId}")]
+        public async Task<IActionResult> DeleteToolImage(string publicId)
+        {
+            var toolImage = await _toolRepo.GetToolImageByPublicIdAsync(publicId);
+            var toolId = toolImage.ToolId;
+            var imageList = new List<string>();
+            imageList.Add(toolImage.PublicId);
+            var imageDeletionResult = await _cloudinaryService.DeleteImagesAsync(imageList);
+            _appRepo.Delete(toolImage);
+            await _appRepo.SaveAll();
+            var tool = await _toolRepo.GetToolById(toolId);
+            return Ok(tool);
+        }        
 
     }
 }

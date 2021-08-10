@@ -32,5 +32,11 @@ namespace Laborlance_API.Data
             var tools = await _context.Tools.ToListAsync();
             return tools;
         }
+
+        public async Task<ToolImage> GetToolImageByPublicIdAsync(string publicId)
+        {
+            var image = await _context.ToolImages.FirstOrDefaultAsync(ti => ti.PublicId == publicId);
+            return image;
+        }
     }
 }

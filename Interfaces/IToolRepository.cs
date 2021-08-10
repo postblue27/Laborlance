@@ -9,5 +9,6 @@ namespace Laborlance_API.Interfaces
         Task<List<Tool>> GetRenterTools(int RenterId);
         Task<Tool> GetToolById(int toolId);
         Task<List<Tool>> GetAllTools();
+        Task<ToolImage> GetToolImageByPublicIdAsync(string publicId);
     }
 }
