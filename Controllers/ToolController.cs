@@ -25,16 +25,6 @@ namespace Laborlance_API.Controllers
             _toolRepo = toolRepo;
         }
 
-        // [Authorize(Roles = "Renter")]
-        // [HttpPost("add-tool")]
-        // public async Task<IActionResult> AddTool(Tool toolToCreate)
-        // {
-        //     _appRepo.Add(toolToCreate);
-        //     if(await _appRepo.SaveAll())
-        //         return Ok(toolToCreate);
-        //     return BadRequest("Problem adding tool");
-        // }
-
         [Authorize(Roles = "Renter,Admin")]
         [HttpGet("get-renter-tools/{renterId}")]
         public async Task<IActionResult> GetRenterTools(int renterId)
@@ -42,6 +32,7 @@ namespace Laborlance_API.Controllers
             var renterTools = await _toolRepo.GetRenterTools(renterId);
             return Ok(renterTools);
         }
+
         [Authorize(Roles = "Admin,Renter")]
         [HttpDelete("delete-tool/{toolId}")]
         public async Task<IActionResult> DeleteTool(int toolId)
@@ -62,6 +53,7 @@ namespace Laborlance_API.Controllers
             }
             return BadRequest("Problem deleting tool");
         }
+
         [Authorize(Roles = "Renter,Admin,Worker")]
         [HttpGet("get-all-tools")]
         public async Task<IActionResult> GetAllTools()
@@ -105,6 +97,17 @@ namespace Laborlance_API.Controllers
             }
             return Ok(toolToCreate);
         }
+
+        [Authorize(Roles = "Renter,Admin")]
+        [HttpPost("edit-tool")]
+        public async Task<IActionResult> EditTool([FromForm]int toolId, [FromForm]string toolName, [FromForm]double rentalPrice)
+        {
+            var tool = await _toolRepo.GetToolById(toolId);
+            tool.ToolName = toolName;
+            tool.RentalPrice = rentalPrice;
+            await _appRepo.SaveAll();
+            return Ok(tool);
+        }        
 
         [Authorize(Roles = "Renter,Admin")]
         [HttpPost("add-new-tool-images")]
