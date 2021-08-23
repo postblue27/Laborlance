@@ -7,3 +7,4 @@ To run API - download sources and run next commands with CLI:
 To run SPA - head to https://github.com/postblue27/Laborlance-SPA , download sources and run next commands with CLI:
 1. npm install
 2. ng serve
+Then navigate to http://localhost:4200/
