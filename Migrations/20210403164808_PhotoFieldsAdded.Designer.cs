@@ -4,14 +4,16 @@ using Laborlance_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Laborlance_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210403164808_PhotoFieldsAdded")]
+    partial class PhotoFieldsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,10 +34,7 @@ namespace Laborlance_API.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartDate")
@@ -162,6 +161,12 @@ namespace Laborlance_API.Migrations
                     b.Property<int?>("OperationId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("RentalPrice")
                         .HasColumnType("float");
 
@@ -178,29 +183,6 @@ namespace Laborlance_API.Migrations
                     b.HasIndex("RenterId");
 
                     b.ToTable("Tools");
-                });
-
-            modelBuilder.Entity("Laborlance_API.Models.ToolImage", b =>
-                {
-                    b.Property<int>("ToolImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ToolId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ToolImageId");
-
-                    b.HasIndex("ToolId");
-
-                    b.ToTable("ToolImages");
                 });
 
             modelBuilder.Entity("Laborlance_API.Models.ToolInProposal", b =>
@@ -497,15 +479,6 @@ namespace Laborlance_API.Migrations
                         .WithMany("Tools")
                         .HasForeignKey("RenterId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Laborlance_API.Models.ToolImage", b =>
-                {
-                    b.HasOne("Laborlance_API.Models.Tool", "Tool")
-                        .WithMany("ToolImages")
-                        .HasForeignKey("ToolId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

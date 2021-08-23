@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Laborlance_API.Data;
+using Laborlance_API.Helpers;
 using Laborlance_API.Interfaces;
 using Laborlance_API.Models;
 using Laborlance_API.Services;
@@ -48,7 +49,8 @@ namespace Laborlance_API
             builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<User>>();
 
-            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("LocalDbConnection")));
             services.AddControllers().AddNewtonsoftJson(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
@@ -63,7 +65,10 @@ namespace Laborlance_API
             services.AddScoped<IOperationRepository, OperationRepository>();
             services.AddScoped<IProposalRepository, ProposalRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<TokenService>();
+            services.AddScoped<CloudinaryService>();
+            services.AddScoped<BestChoiceService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {

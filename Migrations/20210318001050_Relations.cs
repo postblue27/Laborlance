@@ -233,6 +233,33 @@ namespace Laborlance_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tools",
+                columns: table => new
+                {
+                    ToolId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ToolName = table.Column<string>(nullable: true),
+                    RentalPrice = table.Column<double>(nullable: false),
+                    RenterId = table.Column<int>(nullable: false),
+                    OperationId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tools", x => x.ToolId);
+                    table.ForeignKey(
+                        name: "FK_Tools_Operations_OperationId",
+                        column: x => x.OperationId,
+                        principalTable: "Operations",
+                        principalColumn: "OperationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tools_AspNetUsers_RenterId",
+                        column: x => x.RenterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Proposals",
                 columns: table => new
                 {
@@ -258,37 +285,28 @@ namespace Laborlance_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tools",
+                name: "ToolsInProposals",
                 columns: table => new
                 {
-                    ToolId = table.Column<int>(nullable: false)
+                    ToolInProposalId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ToolName = table.Column<string>(nullable: true),
-                    RentalPrice = table.Column<double>(nullable: false),
-                    RenterId = table.Column<int>(nullable: false),
-                    OperationId = table.Column<int>(nullable: true),
-                    ProposalId = table.Column<int>(nullable: true)
+                    ToolId = table.Column<int>(nullable: false),
+                    ProposalId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tools", x => x.ToolId);
+                    table.PrimaryKey("PK_ToolsInProposals", x => x.ToolInProposalId);
                     table.ForeignKey(
-                        name: "FK_Tools_Operations_OperationId",
-                        column: x => x.OperationId,
-                        principalTable: "Operations",
-                        principalColumn: "OperationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tools_Proposals_ProposalId",
+                        name: "FK_ToolsInProposals_Proposals_ProposalId",
                         column: x => x.ProposalId,
                         principalTable: "Proposals",
-                        principalColumn: "ProposalId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ProposalId");
                     table.ForeignKey(
-                        name: "FK_Tools_AspNetUsers_RenterId",
-                        column: x => x.RenterId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        name: "FK_ToolsInProposals_Tools_ToolId",
+                        column: x => x.ToolId,
+                        principalTable: "Tools",
+                        principalColumn: "ToolId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -371,14 +389,19 @@ namespace Laborlance_API.Migrations
                 column: "OperationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tools_ProposalId",
-                table: "Tools",
-                column: "ProposalId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tools_RenterId",
                 table: "Tools",
                 column: "RenterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToolsInProposals_ProposalId",
+                table: "ToolsInProposals",
+                column: "ProposalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToolsInProposals_ToolId",
+                table: "ToolsInProposals",
+                column: "ToolId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -402,19 +425,22 @@ namespace Laborlance_API.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Tools");
+                name: "ToolsInProposals");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Operations");
-
-            migrationBuilder.DropTable(
                 name: "Proposals");
 
             migrationBuilder.DropTable(
+                name: "Tools");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Operations");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

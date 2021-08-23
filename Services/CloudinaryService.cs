@@ -1,21 +1,18 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Laborlance_API.Helpers;
-using Laborlance_API.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Laborlance_API.Data
+namespace Laborlance_API.Services
 {
-    public class AppRepository : IAppRepository
+    public class CloudinaryService
     {
-        private readonly DataContext _context;
         private Cloudinary _cloudinary;
-        public AppRepository(DataContext context, IOptions<CloudinarySettings> cloudinaryConfig)
+        public CloudinaryService(IOptions<CloudinarySettings> cloudinaryConfig)
         {
-            _context = context;
-
             Account acc = new Account(
                 cloudinaryConfig.Value.CloudName,
                 cloudinaryConfig.Value.ApiKey,
@@ -24,27 +21,7 @@ namespace Laborlance_API.Data
 
             _cloudinary = new Cloudinary(acc);
         }
-        public void Add<T>(T entity) where T : class
-        {
-            _context.Add(entity);
-        }
-
-        public void Delete<T>(T entity) where T : class
-        {
-            _context.Remove(entity);
-        }
-
-        public void Update<T>(T entity) where T : class
-        {
-            _context.Update(entity);
-        }
-
-        public async Task<bool> SaveAll()
-        {
-            return await _context.SaveChangesAsync() > 0; // will return true if there is more than 0 changes
-        }
-
-        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
+        public async Task<ImageUploadResult> UploadImageAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
 
@@ -60,8 +37,19 @@ namespace Laborlance_API.Data
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 }
             }
-            return uploadResult;
-        }
 
+            return uploadResult;
+
+        }
+        public async Task<DeletionResult> DeleteImagesAsync(List<string> publicIds)
+        {
+            var deletionResult = new DeletionResult();
+            foreach(var id in publicIds)
+            {
+                var deletionParams = new DeletionParams(id);
+                deletionResult = await _cloudinary.DestroyAsync(deletionParams);
+            }
+            return deletionResult;
+        }
     }
 }

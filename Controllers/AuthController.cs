@@ -42,18 +42,19 @@ namespace Laborlance_API.Controllers
             return BadRequest("Provided user role does not exist");
         // var userToCreate = _mapper.Map<User>(userForRegisterDto);
         var userToCreate = new User {};
-        switch(userForRegisterDto.RoleName)
+        var roleName = userForRegisterDto.RoleName.ToLower();
+        switch(roleName)
         {
-            case "Worker":
+            case "worker":
                 userToCreate = _mapper.Map<Worker>(userForRegisterDto);
                 break;
-            case "Customer":
+            case "customer":
                 userToCreate = _mapper.Map<Customer>(userForRegisterDto);
                 break;
-            case "Renter":
+            case "renter":
                 userToCreate = _mapper.Map<Renter>(userForRegisterDto);
                 break;
-            case "Admin":
+            case "admin":
                 userToCreate = _mapper.Map<User>(userForRegisterDto);
                 break;
             default:
